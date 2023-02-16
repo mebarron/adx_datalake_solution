@@ -1,0 +1,54 @@
+{
+  "Comment": "An example data pipeline using Step Functions and Glue",
+  "StartAt": "IngestRawDataSet",
+  "States": {
+    "IngestRawDataSet": {
+      "Comment": "Triggers the lambda function to ingest the raw dataset from ADX",
+      "Type": "Task",
+      "Resource": "<ingestion lambda function arn>",
+      "OutputPath": "$",
+      "ResultPath": "$.StepFunction.Results",
+      "Parameters": {
+        "DataSetId.$": "$.Id",
+        "DataLakeRawBucket.$": "$.StepFunction.DataLakeRawBucket",
+        "RawCrawlerName.$": "$.StepFunction.RawCrawlerName",
+        "ConvertAndCurateJobName.$": "$.StepFunction.ConvertAndCurateJobName",
+        "CuratedCrawlerName.$": "$.StepFunction.CuratedCrawlerName"
+      },
+      "Next": "CrawlRawDataSet"
+    },
+    "CrawlRawDataSet": {
+      "Comment": "Triggers the Glue crawler against the raw dataset",
+      "Type": "Task",
+      "Resource": "<glue executor lambda function arn>",
+      "OutputPath": "$",
+      "ResultPath": "$.StepFunction.Results",
+      "Parameters": {
+        "CrawlerName.$": "$.StepFunction.RawCrawlerName"
+      },
+      "Next": "ConvertAndCurateDataSet"
+    },
+    "ConvertAndCurateDataSet": {
+      "Comment": "Triggers the Glue job to convert and curate the raw dataset",
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "OutputPath": "$",
+      "ResultPath": "$.StepFunction.Results",
+      "Parameters": {
+        "JobName.$": "$.StepFunction.ConvertAndCurateJobName"
+      },
+      "Next": "CrawlCuratedDataSet"
+    },
+    "CrawlCuratedDataSet": {
+      "Comment": "Triggers the Glue crawler against the curated dataset",
+      "Type": "Task",
+      "OutputPath": "$",
+      "ResultPath": "$.StepFunction.Results",
+      "Resource": "<glue executor lambda function arn>",
+      "Parameters": {
+        "CrawlerName.$": "$.StepFunction.CuratedCrawlerName"
+      },
+      "End": true
+    }
+  }
+}
