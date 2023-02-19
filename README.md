@@ -10,5 +10,5 @@ transformation.
 the buckets and manage permissions to the data stored in them
 - AWS Data Exchange ingestion lambda function is written in Python using Boto3
 - CloudWatch event rule triggers the ingestion based on dataset updates to AWS Data Exchange 
-- Step Function will trigger Glue to perform some basic data transformation, and the a Glue crawler
-to crawl the data and update any schema definition or tables
+- Step Function will trigger Glue to perform some basic data transformation, and the Glue crawler
+to crawl the data in S3 and update any schema definition or tables
