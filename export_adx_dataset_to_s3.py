@@ -11,7 +11,7 @@ def getDataSet(DataSetId):
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def getRevision(DataSetId, RevisionId):
     try:
@@ -21,7 +21,7 @@ def getRevision(DataSetId, RevisionId):
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def getAsset(AssetId, DataSetId, RevisionId):
     try:
@@ -32,7 +32,7 @@ def getAsset(AssetId, DataSetId, RevisionId):
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def listRevisionAssets(DataSetId, RevisionId):
     try:
@@ -43,7 +43,7 @@ def listRevisionAssets(DataSetId, RevisionId):
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def listDataSets():
     try:
@@ -53,7 +53,7 @@ def listDataSets():
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def listDataSetRevisions(DataSetId):
     try:
@@ -63,7 +63,7 @@ def listDataSetRevisions(DataSetId):
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def createJob(JobConfiguration):
     try:
@@ -73,7 +73,7 @@ def createJob(JobConfiguration):
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def startJob(JobId):
     try:
@@ -82,7 +82,7 @@ def startJob(JobId):
         )
         return response
     except Exception as e:
-        return e
+        raise(e)
 
 def lambda_handler(event, context):
     DataSetId = event['Id']
@@ -114,4 +114,4 @@ def lambda_handler(event, context):
         startJob(NewExportJob['Id'])
         return "SUCCESS"
     except Exception as e:
-        return e
+        raise(e)
