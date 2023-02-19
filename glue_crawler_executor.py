@@ -16,4 +16,4 @@ def lambda_handler(event, context):
         startCrawler(MyCrawlerName)
         return "SUCCESS"
     except Exception as e: 
-        return e
+        raise(e)

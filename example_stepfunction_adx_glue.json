@@ -1,5 +1,5 @@
 {
-  "Comment": "An example data pipeline using Step Functions and Glue",
+  "Comment": "A data pipeline using Step Functions and Glue",
   "StartAt": "IngestRawDataSet",
   "States": {
     "IngestRawDataSet": {

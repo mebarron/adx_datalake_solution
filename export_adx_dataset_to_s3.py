@@ -87,13 +87,10 @@ def startJob(JobId):
 def lambda_handler(event, context):
     DataSetId = event['Id']
     DataLakeRawBucket = ""
-
     MyDataSetRevisions = listDataSetRevisions(DataSetId)
     MyDataSetRevisionsL = []
-
     for DataSetRevision in MyDataSetRevisions['Revisions']:
         MyDataSetRevisionsL.append(DataSetRevision['Id'])
-
     MyRevisionAssets = listRevisionAssets(DataSetId, MyDataSetRevisionsL[0])
     MyRevisionAssetS3Key = MyRevisionAssets['Assets'][0]['Name']
     MyRevisionAssetId = MyRevisionAssets['Assets'][0]['Id']
