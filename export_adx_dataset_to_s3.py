@@ -86,32 +86,33 @@ def startJob(JobId):
 
 def lambda_handler(event, context):
     DataSetId = event['Id']
-    DataLakeRawBucket = ""
-    MyDataSetRevisions = listDataSetRevisions(DataSetId)
-    MyDataSetRevisionsL = []
-    for DataSetRevision in MyDataSetRevisions['Revisions']:
-        MyDataSetRevisionsL.append(DataSetRevision['Id'])
-    MyRevisionAssets = listRevisionAssets(DataSetId, MyDataSetRevisionsL[0])
-    MyRevisionAssetS3Key = MyRevisionAssets['Assets'][0]['Name']
-    MyRevisionAssetId = MyRevisionAssets['Assets'][0]['Id']
+    DataLakeRawBucket = event['DataLakeRawBucket']
+    DataSetRevisions = listDataSetRevisions(DataSetId)
+    DataSetRevisionsL = []
+    for DataSetRevision in DataSetRevisions['Revisions']:
+        DataSetRevisionsL.append(DataSetRevision['Id'])
+    RevisionAssets = listRevisionAssets(DataSetId, DataSetRevisionsL[0])
+    RevisionAssetS3Key = RevisionAssets['Assets'][0]['Name']
+    RevisionAssetId = RevisionAssets['Assets'][0]['Id']
 
-    JobConfig = {
-        'ExportAssetsToS3': {
-            'AssetDestinations': [
-                {
-                    'AssetId': MyRevisionAssetId,
-                    'Bucket': DataLakeRawBucket,
-                    'Key': MyRevisionAssetS3Key
-                },
-            ],
-            'DataSetId': DataSetId,
-            'RevisionId': MyDataSetRevisionsL[0]
-            }
+    for i, DataSetRevisionId in enumerate(DataSetRevisionsL):
+    	JobConfig = {
+        	'ExportAssetsToS3': {
+            		'AssetDestinations': [
+                	{
+                    		'AssetId': RevisionAssetId,
+                    		'Bucket': DataLakeRawBucket,
+                    		'Key': RevisionAssetS3Key
+                	},
+            	],
+            	'DataSetId': DataSetId,
+            	'RevisionId': DataSetRevisionsL[i]
+            	}
         }
+	try:
+		NewExportJob = createJob(JobConfig)
+        	startJob(NewExportJob['Id'])
+        	return "SUCCESS"
+    	except Exception as e:
+        	raise(e)
 
-    try:
-        NewExportJob = createJob(JobConfig)
-        startJob(NewExportJob['Id'])
-        return "SUCCESS"
-    except Exception as e:
-        raise(e)
