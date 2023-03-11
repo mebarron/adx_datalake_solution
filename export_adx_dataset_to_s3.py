@@ -92,10 +92,9 @@ def lambda_handler(event, context):
     for DataSetRevision in DataSetRevisions['Revisions']:
         DataSetRevisionsL.append(DataSetRevision['Id'])
     RevisionAssets = listRevisionAssets(DataSetId, DataSetRevisionsL[0])
-    RevisionAssetS3Key = RevisionAssets['Assets'][0]['Name']
-    RevisionAssetId = RevisionAssets['Assets'][0]['Id']
-
     for i, DataSetRevisionId in enumerate(DataSetRevisionsL):
+    RevisionAssetS3Key = RevisionAssets['Assets'][i]['Name']
+    RevisionAssetId = RevisionAssets['Assets'][i]['Id']
     	JobConfig = {
         	'ExportAssetsToS3': {
             		'AssetDestinations': [
@@ -115,4 +114,3 @@ def lambda_handler(event, context):
         	return "SUCCESS"
     	except Exception as e:
         	raise(e)
-
