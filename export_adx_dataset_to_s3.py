@@ -88,16 +88,14 @@ def lambda_handler(event, context):
     DataSetId = event['Id']
     DataLakeRawBucket = event['DataLakeRawBucket']
     DataSetRevisions = listDataSetRevisions(DataSetId)
-    DataSetRevisionsL = []
-    for DataSetRevision in DataSetRevisions['Revisions']:
-        DataSetRevisionsL.append(DataSetRevision['Id'])
-    RevisionAssets = listRevisionAssets(DataSetId, DataSetRevisionsL[0])
-    for i, DataSetRevisionId in enumerate(DataSetRevisionsL):
+    for i, DataSetRevision in enumerate(DataSetRevisions['Revisions']):
+    	RevisionAssets = listRevisionAssets(DataSetId, DataSetRevisions[i])
+    for i, DataSetRevisionId in enumerate(DataSetRevisions):
     	RevisionAssetS3Key = RevisionAssets['Assets'][i]['Name']
     	RevisionAssetId = RevisionAssets['Assets'][i]['Id']
     	JobConfig = {
         	'ExportAssetsToS3': {
-            		'AssetDestinations': [
+           		'AssetDestinations': [
                 	{
                     		'AssetId': RevisionAssetId,
                     		'Bucket': DataLakeRawBucket,
@@ -105,12 +103,12 @@ def lambda_handler(event, context):
                 	},
             	],
             	'DataSetId': DataSetId,
-            	'RevisionId': DataSetRevisionsL[i]
+            	'RevisionId': DataSetRevisions[i]
             	}
         }
 	try:
 		NewExportJob = createJob(JobConfig)
         	startJob(NewExportJob['Id'])
-        	return "SUCCESS"
     	except Exception as e:
         	raise(e)
+    return "SUCCESS"
