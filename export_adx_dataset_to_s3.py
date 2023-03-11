@@ -93,8 +93,8 @@ def lambda_handler(event, context):
         DataSetRevisionsL.append(DataSetRevision['Id'])
     RevisionAssets = listRevisionAssets(DataSetId, DataSetRevisionsL[0])
     for i, DataSetRevisionId in enumerate(DataSetRevisionsL):
-    RevisionAssetS3Key = RevisionAssets['Assets'][i]['Name']
-    RevisionAssetId = RevisionAssets['Assets'][i]['Id']
+    	RevisionAssetS3Key = RevisionAssets['Assets'][i]['Name']
+    	RevisionAssetId = RevisionAssets['Assets'][i]['Id']
     	JobConfig = {
         	'ExportAssetsToS3': {
             		'AssetDestinations': [
